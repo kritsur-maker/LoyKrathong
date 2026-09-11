@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ลอยกระทงออนไลน์</title>
+    <title>ดูดวงออนไลน์แม่นๆ</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,283 +13,258 @@
         }
 
         body {
-            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             color: #fff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
+            padding: 20px 10px;
         }
 
         h1 {
-            margin-top: 20px;
             color: #f1c40f;
             text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
             text-align: center;
-            font-size: 2rem;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
         }
 
-        /* Card กรอกข้อมูล */
-        .form-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 24px;
+        .container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            padding: 25px;
             border-radius: 16px;
-            width: 90%;
-            max-width: 480px;
-            margin: 20px 0;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            z-index: 10;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: bold;
             color: #e2e8f0;
         }
 
-        input[type="text"], select {
+        input[type="text"], input[type="date"], select {
             width: 100%;
             padding: 12px;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.7);
             color: #fff;
             outline: none;
-            font-size: 15px;
-            transition: 0.3s;
+            font-size: 16px;
         }
 
-        input[type="text"]:focus, select:focus {
+        input:focus, select:focus {
             border-color: #f1c40f;
-            box-shadow: 0 0 8px rgba(241, 196, 15, 0.3);
-        }
-
-        /* การเลือกกระทง */
-        .krathong-options {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .krathong-item {
-            flex: 1;
-            text-align: center;
-            cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 8px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            transition: 0.3s;
-        }
-
-        .krathong-item img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            margin-bottom: 6px;
-        }
-
-        .krathong-item p {
-            font-size: 13px;
-        }
-
-        .krathong-item.selected {
-            border-color: #f1c40f;
-            background: rgba(241, 196, 15, 0.2);
-            transform: translateY(-2px);
+            box-shadow: 0 0 8px rgba(241, 196, 15, 0.4);
         }
 
         button {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, #f1c40f, #f39c12);
-            color: #1e293b;
+            color: #1a1a2e;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
+            box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4);
         }
 
-        /* ฉากแม่น้ำ */
-        .river-container {
-            position: relative;
-            width: 100%;
-            height: 320px;
-            background: linear-gradient(to bottom, #0f172a, #030712);
-            overflow: hidden;
-            border-top: 2px solid #38bdf8;
-            margin-top: auto;
+        /* ส่วนผลลัพธ์คำนาย */
+        .result-card {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            border-left: 5px solid #f1c40f;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
-        /* กระทงเคลื่อนที่ */
-        .floating-krathong {
-            position: absolute;
-            bottom: -100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: floatUp 12s linear forwards, sway 3s ease-in-out infinite alternate;
-            z-index: 5;
+        .result-card h2 {
+            color: #f1c40f;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
 
-        .floating-krathong img {
-            width: 75px;
-            filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.6));
+        .zodiac-badge {
+            display: inline-block;
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            border: 1px solid #f1c40f;
         }
 
-        .wish-bubble {
-            background: rgba(255, 255, 255, 0.95);
-            color: #0f172a;
-            padding: 8px 14px;
-            border-radius: 16px;
-            font-size: 12px;
-            margin-bottom: 6px;
-            white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            text-align: center;
-            border: 1px solid rgba(241, 196, 15, 0.5);
+        .fortune-item {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: 15px;
         }
 
-        /* Animation ลอยและโบกสบัด */
-        @keyframes floatUp {
-            0% {
-                bottom: 10px;
-                opacity: 1;
-                transform: scale(1);
-            }
-            100% {
-                bottom: 260px;
-                opacity: 0.15;
-                transform: scale(0.35);
-            }
+        .fortune-item strong {
+            color: #38bdf8;
         }
 
-        @keyframes sway {
-            0% { transform: translateX(-12px); }
-            100% { transform: translateX(12px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <h1>🌕 ลอยกระทงออนไลน์ 🌕</h1>
+    <h1>🔮 ดูดวงชะตารายวัน 🔮</h1>
 
-    <div class="form-container">
-        <!-- เลือกเพศ / คำนำหน้า -->
+    <div class="container">
         <div class="form-group">
-            <label for="gender">เพศ / คำนำหน้า:</label>
+            <label for="name">ชื่อของคุณ:</label>
+            <input type="text" id="name" placeholder="กรอกชื่อของคุณ" required>
+        </div>
+
+        <div class="form-group">
+            <label for="gender">เพศ:</label>
             <select id="gender">
-                <option value="นาย">นาย</option>
-                <option value="นางสาว">นางสาว</option>
-                <option value="เด็กชาย">เด็กชาย</option>
-                <option value="เด็กหญิง">เด็กหญิง</option>
-                <option value="">ไม่ระบุ</option>
+                <option value="ชาย">ชาย</option>
+                <option value="หญิง">หญิง</option>
+                <option value="LGBTQ+">LGBTQ+</option>
+                <option value="ไม่ระบุ">ไม่ระบุ</option>
             </select>
         </div>
 
-        <!-- กรอกชื่อ -->
         <div class="form-group">
-            <label for="username">ชื่อของคุณ:</label>
-            <input type="text" id="username" placeholder="กรอกชื่อของคุณ" required>
+            <label for="birthdate">วัน/เดือน/ปีเกิด:</label>
+            <input type="date" id="birthdate" required>
         </div>
 
-        <!-- เลือกกระทง -->
-        <div class="form-group">
-            <label>เลือกกระทง:</label>
-            <div class="krathong-options">
-                <div class="krathong-item selected" onclick="selectKrathong(this, 'https://cdn-icons-png.flaticon.com/512/3507/3507092.png')">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3507/3507092.png" alt="กระทงใบตอง">
-                    <p>ใบตอง</p>
-                </div>
-                <div class="krathong-item" onclick="selectKrathong(this, 'https://cdn-icons-png.flaticon.com/512/2619/2619286.png')">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2619/2619286.png" alt="กระทงดอกไม้">
-                    <p>ดอกไม้</p>
-                </div>
-                <div class="krathong-item" onclick="selectKrathong(this, 'https://cdn-icons-png.flaticon.com/512/2909/2909763.png')">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2909/2909763.png" alt="กระทงแฟนซี">
-                    <p>สวรรค์</p>
-                </div>
+        <button onclick="predictFortune()">เปิดคำทำนาย</button>
+
+        <!-- ผลลัพธ์ -->
+        <div class="result-card" id="resultCard">
+            <h2 id="resultTitle">คำทำนายดวงชะตา</h2>
+            <div class="zodiac-badge" id="zodiacBadge">ราศี...</div>
+            
+            <div class="fortune-item">
+                <strong>💼 การงาน / การเรียน:</strong>
+                <p id="workFortune">-</p>
+            </div>
+            
+            <div class="fortune-item">
+                <strong>💰 การเงิน / โชคลาภ:</strong>
+                <p id="moneyFortune">-</p>
+            </div>
+            
+            <div class="fortune-item">
+                <strong>❤️ ความรัก / ความสัมพันธ์:</strong>
+                <p id="loveFortune">-</p>
             </div>
         </div>
-
-        <!-- เลือกคำอวยพร -->
-        <div class="form-group">
-            <label for="wish">เลือกคำอวยพร:</label>
-            <select id="wish">
-                <option value="ขอให้มีความสุข กายสบายใจ ปราศจากโรคภัย">ขอให้มีความสุข กายสบายใจ ปราศจากโรคภัย</option>
-                <option value="ขอให้ลอยความทุกข์ความโศกออกไป เจอแต่สิ่งดีๆ">ขอให้ลอยความทุกข์ความโศกออกไป เจอแต่สิ่งดีๆ</option>
-                <option value="ขอให้ร่ำรวย เงินทองไหลมาเทมา การงานรุ่งเรือง">ขอให้ร่ำรวย เงินทองไหลมาเทมา การงานรุ่งเรือง</option>
-                <option value="ขอให้เจอความรักที่ดี สมหวังในเรื่องความรัก">ขอให้เจอความรักที่ดี สมหวังในเรื่องความรัก</option>
-                <option value="ขอให้สอบผ่าน ได้เกรด A ทุกวิชา!">ขอให้สอบผ่าน ได้เกรด A ทุกวิชา!</option>
-            </select>
-        </div>
-
-        <button onclick="launchKrathong()">อธิษฐานและลอยกระทง</button>
     </div>
 
-    <!-- แม่น้ำ -->
-    <div class="river-container" id="river"></div>
-
     <script>
-        let selectedKrathongImg = 'https://cdn-icons-png.flaticon.com/512/3507/3507092.png';
+        // ฐานข้อมูลคำทำนาย
+        const fortunes = {
+            work: [
+                "ช่วงนี้ผู้ใหญ่ให้ความเมตตา งานประเดประดังแต่ผ่านไปได้ด้วยดี",
+                "ระวังเรื่องการสื่อสารคลาดเคลื่อนกับเพื่อนร่วมงานหรือเพื่อนเรียน",
+                "มีโอกาสได้รับไอเดียใหม่ๆ หรือโปรเจกต์ใหม่ที่จะสร้างชื่อเสียงให้คุณ",
+                "เป็นช่วงที่ต้องใช้ความอดทนสูง ผลงานจะออกมารายงานผลในเร็วๆ นี้"
+            ],
+            money: [
+                "มีเกณฑ์รับทรัพย์รับโชคจากเลขใกล้ตัว หรือลาภลอยแบบไม่คาดฝัน",
+                "การเงินหมุนคล่องตัวดี แต่ควรระวังการใช้จ่ายตามอารมณ์ช่วงปลายสัปดาห์",
+                "มีรายจ่ายกะทันหันเกี่ยวกับสุขภาพหรือของใช้ส่วนตัว งดลงทุนเสี่ยงโชคสูง",
+                "โชคลาภมาจากคนใกล้ชิดหรือเพศตรงข้าม ให้คำแนะนำด้านการเงินที่ดี"
+            ],
+            love: [
+                "คนมีคู่ความสัมพันธ์หวานชื่น คนโสดมีเกณฑ์พบคนถูกใจผ่านทางออนไลน์",
+                "คนโสดเสน่ห์แรง มีคนเข้ามาให้เลือก แต่ต้องดูให้ดีอย่าเพิ่งรีบร้อน",
+                "ระวังความอารมณ์ร้อนหรือความขุ่นเคืองเล็กๆ น้อยๆ กับคนรัก ควรปรับความเข้าใจกัน",
+                "มีเกณฑ์ได้เดินทางไกลร่วมกับคนรัก หรือได้พบมิตรภาพใหม่ที่พัฒนาความสัมพันธ์ได้"
+            ]
+        };
 
-        function selectKrathong(element, imgSrc) {
-            document.querySelectorAll('.krathong-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            selectedKrathongImg = imgSrc;
+        // คำนวณราศีตามวันและเดือน
+        function getZodiacSign(day, month) {
+            const zodiacs = [
+                { name: "ราศีมังกร", icon: "♑", startMonth: 1, startDay: 15 },
+                { name: "ราศีกุมภ์", icon: "♒", startMonth: 2, startDay: 13 },
+                { name: "ราศีมีน", icon: "♓", startMonth: 3, startDay: 15 },
+                { name: "ราศีเมษ", icon: "♈", startMonth: 4, startDay: 13 },
+                { name: "ราศีพฤษภ", icon: "♉", startMonth: 5, startDay: 15 },
+                { name: "ราศีเมถุน", icon: "♊", startMonth: 6, startDay: 15 },
+                { name: "ราศีกรกฎ", icon: "♋", startMonth: 7, startDay: 16 },
+                { name: "ราศีสิงห์", icon: "♌", startMonth: 8, startDay: 17 },
+                { name: "ราศีกันย์", icon: "♍", startMonth: 9, startDay: 17 },
+                { name: "ราศีตุลย์", icon: "♎", startMonth: 10, startDay: 18 },
+                { name: "ราศีพิจิก", icon: "♏", startMonth: 11, startDay: 16 },
+                { name: "ราศีธนู", icon: "♐", startMonth: 12, startDay: 16 }
+            ];
+
+            if ((month === 1 && day < 15) || (month === 12 && day >= 16)) return "ราศีธนู ♐";
+            if ((month === 1 && day >= 15) || (month === 2 && day < 13)) return "ราศีมังกร ♑";
+            if ((month === 2 && day >= 13) || (month === 3 && day < 15)) return "ราศีกุมภ์ ♒";
+            if ((month === 3 && day >= 15) || (month === 4 && day < 13)) return "ราศีมีน ♓";
+            if ((month === 4 && day >= 13) || (month === 5 && day < 15)) return "ราศีเมษ ♈";
+            if ((month === 5 && day >= 15) || (month === 6 && day < 15)) return "ราศีพฤษภ ♉";
+            if ((month === 6 && day >= 15) || (month === 7 && day < 16)) return "ราศีเมถุน ♊";
+            if ((month === 7 && day >= 16) || (month === 8 && day < 17)) return "ราศีกรกฎ ♋";
+            if ((month === 8 && day >= 17) || (month === 9 && day < 17)) return "ราศีสิงห์ ♌";
+            if ((month === 9 && day >= 17) || (month === 10 && day < 18)) return "ราศีกันย์ ♍";
+            if ((month === 10 && day >= 18) || (month === 11 && day < 16)) return "ราศีตุลย์ ♎";
+            if ((month === 11 && day >= 16) || (month === 12 && day < 16)) return "ราศีพิจิก ♏";
+
+            return "ราศีมังกร ♑";
         }
 
-        function launchKrathong() {
-            const gender = document.getElementById('gender').value;
-            const nameInput = document.getElementById('username').value.trim();
-            const wish = document.getElementById('wish').value;
+        function getRandomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
 
-            if (nameInput === "") {
-                alert("กรุณากรอกชื่อของคุณก่อนลอยกระทงครับ/ค่ะ");
+        function predictFortune() {
+            const name = document.getElementById('name').value.trim();
+            const gender = document.getElementById('gender').value;
+            const birthdateInput = document.getElementById('birthdate').value;
+
+            if (!name || !birthdateInput) {
+                alert("กรุณากรอกชื่อและเลือกวันเดือนปีเกิดให้ครบถ้วนครับ/ค่ะ");
                 return;
             }
 
-            const fullName = gender ? `${gender}${nameInput}` : nameInput;
+            const birthDate = new Date(birthdateInput);
+            const day = birthDate.getDate();
+            const month = birthDate.getMonth() + 1; // getMonth() เริ่มที่ 0
 
-            const river = document.getElementById('river');
-            const krathongDiv = document.createElement('div');
-            krathongDiv.className = 'floating-krathong';
+            // สรุปราศี
+            const zodiacSign = getZodiacSign(day, month);
 
-            const randomX = Math.floor(Math.random() * (window.innerWidth - 140));
-            krathongDiv.style.left = `${Math.max(15, randomX)}px`;
+            // แสดงผลลัพธ์
+            document.getElementById('resultTitle').innerText = `ดวงชะตาของ คุณ${name} (${gender})`;
+            document.getElementById('zodiacBadge').innerText = `${zodiacSign}`;
+            document.getElementById('workFortune').innerText = getRandomItem(fortunes.work);
+            document.getElementById('moneyFortune').innerText = getRandomItem(fortunes.money);
+            document.getElementById('loveFortune').innerText = getRandomItem(fortunes.love);
 
-            krathongDiv.innerHTML = `
-                <div class="wish-bubble">
-                    <strong>${fullName}</strong><br>
-                    "${wish}"
-                </div>
-                <img src="${selectedKrathongImg}" alt="Krathong">
-            `;
-
-            river.appendChild(krathongDiv);
-
-            setTimeout(() => {
-                krathongDiv.remove();
-            }, 12000);
+            document.getElementById('resultCard').style.display = 'block';
         }
     </script>
 </body>
